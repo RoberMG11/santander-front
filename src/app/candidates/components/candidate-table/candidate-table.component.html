@@ -1,0 +1,24 @@
+<div class="container mt-5">
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Seniority</th>
+                <th>Years</th>
+                <th>Availability</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let c of candidates">
+                <td>{{ c.id }}</td>
+                <td>{{ c.name }}</td>
+                <td>{{ c.surname }}</td>
+                <td>{{ c.seniority }}</td>
+                <td>{{ c.yearsOfExperience }}</td>
+                <td>{{ c.availability ? 'Yes' : 'No' }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

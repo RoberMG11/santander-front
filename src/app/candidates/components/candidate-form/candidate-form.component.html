@@ -1,0 +1,20 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="container mt-4">
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input id="name" type="text" formControlName="name" class="form-control"
+            [class.is-invalid]="form.get('name')?.invalid && form.get('name')?.touched" />
+    </div>
+
+    <div class="mb-3">
+        <label for="surname" class="form-label">Surname</label>
+        <input id="surname" type="text" formControlName="surname" class="form-control"
+            [class.is-invalid]="form.get('surname')?.invalid && form.get('surname')?.touched" />
+    </div>
+
+    <div class="mb-3">
+        <label for="file" class="form-label">Excel file</label>
+        <input id="file" type="file" (change)="onFileChange($event)" class="form-control" accept=".xlsx, .xls" />
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Submit</button>
+</form>
