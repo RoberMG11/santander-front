@@ -1,9 +1,17 @@
-import { Component } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { CandidateFormComponent } from './candidates/components/candidate-form/candidate-form.component';
 import { CandidateTableComponent } from './candidates/components/candidate-table/candidate-table.component';
 import { Candidate } from './candidates/models/candidate.model';
 import { CandidateService } from './candidates/services/candidate.service';
 import { CommonModule } from '@angular/common';
+
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-root',
@@ -12,20 +20,52 @@ import { CommonModule } from '@angular/common';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit, AfterViewInit {
   title = 'santander-front';
 
   candidates: Candidate[] = [];
   errorMessage: string | null = null;
+  successMessage: string | null = null;
 
-  constructor(private candidateService: CandidateService) { }
+  @ViewChild('candidateModal') modalRef!: ElementRef;
+  private bootstrapModal: any;
+
+  constructor(private candidateService: CandidateService) {}
+
+  ngOnInit(): void {
+    this.loadCandidates();
+  }
+
+  loadCandidates() {
+    this.candidateService.getCandidates().subscribe({
+      next: (data) => {
+        this.candidates = data;
+      },
+      error: (err) => {
+        this.errorMessage = 'Error loading candidates: ' + (err?.error?.message || 'Unexpected error');
+        console.error(err);
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    const modalEl = this.modalRef.nativeElement;
+    this.bootstrapModal = new bootstrap.Modal(modalEl);
+  }
 
   handleSubmit(formData: FormData) {
-    this.errorMessage = null; // limpia error anterior
+    this.errorMessage = null;
+    this.successMessage = null;
 
     this.candidateService.uploadCandidate(formData).subscribe({
-      next: (candidate) => {
-        this.candidates = [...this.candidates, candidate];
+      next: () => {
+        this.successMessage = 'Candidate inserted successfully!';
+        this.loadCandidates();
+        this.bootstrapModal.hide();
+
+        setTimeout(() => {
+          this.successMessage = null;
+        }, 3000);
       },
       error: (err) => {
         this.errorMessage = err?.error?.message || 'Unexpected error during upload.';
@@ -34,4 +74,9 @@ export class AppComponent {
     });
   }
 
+  openModal() {
+    this.bootstrapModal.show();
+    this.errorMessage = null;
+    this.successMessage = null;
+  }
 }

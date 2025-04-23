@@ -12,5 +12,5 @@ import { MatTableModule } from '@angular/material/table';
 })
 export class CandidateTableComponent {
   @Input() candidates: Candidate[] = [];
-  displayedColumns = ['id', 'name', 'surname', 'seniority', 'years', 'availability'];
+  displayedColumns = ['name', 'surname', 'seniority', 'years', 'availability'];
 }
